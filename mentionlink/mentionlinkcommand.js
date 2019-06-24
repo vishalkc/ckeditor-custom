@@ -12,7 +12,7 @@ export default class MentionLinkCommand extends Command {
                 let item = changes[0].position.textNode;
                 if(changes[0].position.textNode===null)
                     item = changes[0].position.getShiftedBy(-1).textNode;
-                console.log(changes[0].position.textNode);
+                //console.log(changes[0].position.textNode);
                 
                 if(changes[0]!==undefined && item!==null)
                 {
@@ -20,29 +20,27 @@ export default class MentionLinkCommand extends Command {
                     let length = item.data.length;
                     let data = item.data.slice( 1, length );
                     //const attributes = toMap(selection.getAttributes());
-                    console.log(item.hasAttribute(linkAttribute));
+                    ///console.log(item.hasAttribute(linkAttribute));
                     if(item!== null && data === linkData)
-                    {                    
-                        writer.setAttribute(linkAttribute, linkurl, item);
+                    {  
+                        const start = model.createPositionBefore(item).getShiftedBy(1);
+                        const end = model.createPositionAfter(item)                 
+                        const linkRange = writer.createRange( start, end );  
+                        console.log(linkRange);
+                        writer.setAttribute( linkAttribute, linkurl, linkRange );  
+                        //writer.setAttribute(linkAttribute, linkurl, item);
                     }
                     else if(item!== null && item.hasAttribute(linkAttribute)){
-                        writer.removeAttribute(linkAttribute, item);
+                        if(changes[0].type == 'remove') {
+                            writer.remove(item);
+                        }
+                        
+                        else {
+                            writer.removeAttribute(linkAttribute, item);
+                        }                       
                     }
                 }
-            }
-            //writer.insertElement( 'paragraph', changes[0].position.anchor.textNode, 0 );
-            // Check if the changes lead to an empty root in the editor.
-            // for ( const entry of changes ) {
-            //     if ( entry.type === 'insert' && entry.name === '$text' ) {
-            //         //writer.insertElement( 'paragraph', entry.position.root, 0 );
-        
-            //         // It is fine to return early, even if multiple roots would need to be fixed.
-            //         // All post-fixers will be fired again, so if there are more empty roots, those will be fixed, too.
-            //         return true;
-            //     }
-            //     return true;
-            // }
-           
+            }           
         } );
     }
     refresh() {

@@ -38,7 +38,7 @@ ClassicEditor
         editor.execute('mentionlink',{
             linkData:'1001', 
             linkurl: 'http://www.google.com',
-            linkAttribute: 'linkHref'
+            linkAttribute: 'mentionlink'
         }); 
         window.editor = editor;
     } )
